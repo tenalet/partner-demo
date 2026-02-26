@@ -1,0 +1,22 @@
+{
+  "name": "partner-demo",
+  "version": "1.0.0",
+  "description": "Tenalet Partner SDK test harness",
+  "license": "MIT",
+  "author": "Tenalet <engineering@tenalet.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tenalet/partner-demo.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

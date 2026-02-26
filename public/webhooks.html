@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Demo - Webhooks</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/" class="brand">Partner Demo</a>
+    <a href="/">Dashboard</a>
+    <a href="/webhooks.html" class="active">Webhooks</a>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h2 style="display:flex;justify-content:space-between;align-items:center;">
+        Webhook Events
+        <label style="font-size:12px;font-weight:400;display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" id="auto-refresh" checked> Auto-refresh
+        </label>
+      </h2>
+      <div id="webhooks-container">
+        <div class="empty">No webhook events received yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/webhooks.js"></script>
+</body>
+</html>

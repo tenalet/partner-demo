@@ -1,0 +1,403 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f5f5;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Nav */
+nav {
+  background: #111;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+nav .brand {
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+nav a {
+  color: #aaa;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+nav a:hover,
+nav a.active {
+  color: #fff;
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.card h2 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Forms */
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.checkbox-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.radio-group {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #111;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.btn-success {
+  background: #16a34a;
+  color: #fff;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-green {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-yellow {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.badge-red {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.badge-gray {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+/* Property cards */
+.tolet-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: #fafafa;
+}
+
+.tolet-card h3 {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.tolet-card .meta {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.tolet-card .actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* App list */
+.app-list {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #ddd;
+}
+
+.app-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Event log */
+.event-log {
+  background: #1a1a2e;
+  color: #a0f0a0;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  height: 500px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.event-log .entry {
+  margin-bottom: 4px;
+}
+
+.event-log .time {
+  color: #666;
+}
+
+.event-log .type {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+/* Success page */
+.success-box {
+  text-align: center;
+  max-width: 500px;
+  margin: 60px auto;
+}
+
+.success-box .checkmark {
+  width: 64px;
+  height: 64px;
+  background: #16a34a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: #fff;
+  font-size: 32px;
+}
+
+.success-box h1 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.success-box .detail {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.success-box .actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Reports */
+.report-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background: #fff;
+}
+
+.report-card .info h3 {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.report-card .info p {
+  font-size: 12px;
+  color: #777;
+}
+
+/* Webhooks table */
+.webhook-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.webhook-table th {
+  text-align: left;
+  padding: 8px 10px;
+  background: #f3f4f6;
+  border-bottom: 2px solid #e0e0e0;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.webhook-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+}
+
+.webhook-table .payload {
+  max-width: 400px;
+  overflow: hidden;
+}
+
+.webhook-table .payload pre {
+  background: #f9fafb;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 100px;
+  overflow-y: auto;
+  margin: 0;
+}
+
+/* Misc */
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 40px 20px;
+  font-size: 14px;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+.mb-8 {
+  margin-bottom: 8px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Embed container */
+#tenalet-embed-wrapper {
+  min-height: 600px;
+}

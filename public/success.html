@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Demo - Application Submitted</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/" class="brand">Partner Demo</a>
+    <a href="/">Dashboard</a>
+    <a href="/webhooks.html">Webhooks</a>
+  </nav>
+
+  <div class="container">
+    <div class="success-box card">
+      <div class="checkmark">&#10003;</div>
+      <h1>Application Submitted</h1>
+      <p class="detail">Application ID: <strong id="app-id">-</strong></p>
+      <p class="detail">Status: <span id="app-status">-</span></p>
+      <div class="actions">
+        <a class="btn btn-success" id="reports-link" href="#">View Reports</a>
+        <a class="btn btn-secondary" href="/">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/success.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Demo - Screen Tenant</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/" class="brand">Partner Demo</a>
+    <a href="/">Dashboard</a>
+    <a href="/webhooks.html">Webhooks</a>
+  </nav>
+
+  <div class="container">
+    <div class="split">
+      <!-- Left: Tenant Form + Embed -->
+      <div>
+        <div class="card" id="tenant-form-card">
+          <h2>Screen Tenant</h2>
+          <p class="mb-8" style="font-size:13px;color:#777;">Property: <strong id="tolet-name">-</strong></p>
+          <form id="tenant-form">
+            <label for="externalUserId">External User ID *</label>
+            <input type="text" id="externalUserId" required placeholder="usr_abc123">
+
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" placeholder="Kemi">
+
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" placeholder="Adebayo">
+
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="kemi@example.com">
+
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" placeholder="+2348012345678">
+
+            <button type="submit" class="btn btn-primary mt-16" id="start-btn">Start Screening</button>
+            <div id="screen-error" class="error hidden"></div>
+          </form>
+        </div>
+
+        <div class="card hidden" id="embed-card">
+          <h2>Application Embed</h2>
+          <div id="tenalet-embed-wrapper">
+            <div id="tenalet-app"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Event Log -->
+      <div class="card">
+        <h2>Event Log</h2>
+        <div class="event-log" id="event-log">Waiting for events...\n</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/screen.js"></script>
+</body>
+</html>
