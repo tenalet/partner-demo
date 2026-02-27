@@ -1,14 +1,14 @@
 # Tenalet Kit Demo
 
-Reference implementation and testing environment for the Tenalet Partner SDK. Demonstrates property creation, embedded tenant screening, report access, and webhook handling.
+Reference implementation and testing environment for Tenalet Kit. Demonstrates property creation, embedded tenant screening, report access, and webhook handling.
 
 ## Quick Start
 
 **Prerequisites:** Node.js 18+ (uses native `fetch`)
 
 ```bash
-git clone https://github.com/tenalet/partner-demo.git
-cd partner-demo
+git clone https://github.com/tenalet/kit-demo.git
+cd kit-demo
 npm install
 cp .env.example .env
 # Edit .env with your partner API key
@@ -269,7 +269,7 @@ Always pass `refreshToken` from the API response to `startApplication()`.
 ## Project Structure
 
 ```
-partner-demo/
+kit-demo/
 ├── server.js              # Express server: API proxy, webhook handler, config endpoint
 ├── public/
 │   ├── index.html         # Dashboard page

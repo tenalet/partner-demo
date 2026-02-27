@@ -1,12 +1,12 @@
 {
-  "name": "partner-demo",
+  "name": "kit-demo",
   "version": "1.0.0",
-  "description": "Tenalet Partner SDK test harness",
+  "description": "Tenalet Kit SDK test harness",
   "license": "MIT",
   "author": "Tenalet <engineering@tenalet.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tenalet/partner-demo.git"
+    "url": "https://github.com/tenalet/kit-demo.git"
   },
   "engines": {
     "node": ">=18"
