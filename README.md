@@ -260,18 +260,6 @@ embed.destroy();
 | `onApplicationSubmitted` | No | Called when the applicant submits the screening |
 | `onError` | No | Called on errors (e.g. invalid token, network failure) |
 
-### `Tenalet.createApplication(options)` (Link-code flow)
-
-Use this for the self-service flow where applicants sign in with OTP. No API call needed — just a link code from the dashboard.
-
-```js
-const embed = Tenalet.createApplication({
-  linkCode: 'abc123',
-  containerId: 'tenalet-app',
-  onApplicationSubmitted: function (data) { },
-});
-```
-
 ### Token lifecycle
 
 The access token (`token`) is short-lived. When it expires, the embed SDK automatically uses the `refreshToken` to obtain a new access token without interrupting the applicant. If no `refreshToken` is provided, the session will end when the access token expires and the applicant will see an error.
