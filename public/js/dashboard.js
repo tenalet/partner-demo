@@ -39,8 +39,6 @@
       return;
     }
 
-    const whoPays = document.querySelector('input[name="whoPays"]:checked').value;
-
     const landlord = {};
     const lFirst = document.getElementById('landlordFirst').value.trim();
     const lLast = document.getElementById('landlordLast').value.trim();
@@ -59,7 +57,7 @@
         },
         role: document.getElementById('role').value,
       },
-      requirements: { modules, whoPays },
+      requirements: { modules },
       note: document.getElementById('note').value.trim() || undefined,
       isAcceptingApplications: true,
     };
@@ -77,7 +75,6 @@
       form.reset();
       // re-check defaults
       document.querySelector('input[name="modules"][value="rentalApplication"]').checked = true;
-      document.querySelector('input[name="whoPays"][value="applicant"]').checked = true;
       incomeCheckbox.disabled = true;
       await loadTolets();
     } catch (err) {
@@ -152,9 +149,9 @@
       el.innerHTML = items
         .map(
           (a) => {
-            const actionBtn = a.status === 'submitted' || a.status === 'approved' || a.status === 'rejected'
-              ? `<a class="btn btn-sm btn-secondary" href="/reports.html?applicationId=${a.id}">Reports</a>`
-              : `<a class="btn btn-sm btn-primary" href="/screen.html?toletId=${toletId}">Resume</a>`;
+            const actionBtn = a.status === 'draft'
+              ? `<a class="btn btn-sm btn-primary" href="/screen.html?applicationId=${a.id}&toletId=${toletId}">Resume</a>`
+              : `<a class="btn btn-sm btn-secondary" href="/reports.html?applicationId=${a.id}">Reports</a>`;
             return `
           <div class="app-item">
             <span>${escapeHtml(a.applicantFullName || '-')} ${statusBadge(a.status)}</span>

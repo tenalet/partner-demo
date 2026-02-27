@@ -109,8 +109,7 @@ Create a property listing for tenant screening.
     "type": "apartment"
   },
   "requirements": {
-    "modules": ["rentalApplication", "incomeVerification", "creditHistoryAndScore"],
-    "whoPays": "applicant"
+    "modules": ["rentalApplication", "incomeVerification", "creditHistoryAndScore"]
   },
   "note": "2-bedroom flat, 3rd floor",
   "isAcceptingApplications": true
@@ -144,7 +143,6 @@ Create a screening application and get embed credentials. This is the main endpo
   "externalUserId": "usr_abc123",
   "firstName": "Kemi",
   "lastName": "Adebayo",
-  "email": "kemi@example.com",
   "phone": "+2348012345678"
 }
 ```
@@ -154,7 +152,6 @@ Create a screening application and get embed credentials. This is the main endpo
 | `externalUserId` | Yes | Your unique ID for the applicant (alphanumeric, dots, hyphens, underscores) |
 | `firstName` | No | Pre-fills the application form |
 | `lastName` | No | Pre-fills the application form |
-| `email` | No | Used for screening notifications (not for account creation) |
 | `phone` | No | Pre-fills the application form |
 
 **Response:**
@@ -182,6 +179,12 @@ Create a screening application and get embed credentials. This is the main endpo
 | `embedUrl` | Full URL to load in the embed iframe |
 
 The `refreshToken` is used by the SDK to silently renew the session when the access token expires. Partners must pass both `token` and `refreshToken` to the SDK (see [Embed SDK](#embed-sdk) below).
+
+#### `POST /applications/:id/embed-token`
+
+Generate fresh embed tokens for an existing **draft** application. Use this to resume an application that was started but not yet submitted. Returns the same response shape as the create endpoint.
+
+Returns `400` if the application has already been submitted.
 
 #### `GET /tolets/:toletId/applications`
 

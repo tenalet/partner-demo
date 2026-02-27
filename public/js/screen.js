@@ -1,7 +1,9 @@
 (function () {
   const toletId = qs('toletId');
-  if (!toletId) {
-    alert('Missing toletId query parameter');
+  const applicationId = qs('applicationId');
+
+  if (!toletId && !applicationId) {
+    alert('Missing toletId or applicationId query parameter');
     window.location.href = '/';
     return;
   }
@@ -14,13 +16,38 @@
   const toletNameEl = document.getElementById('tolet-name');
 
   // Load tolet name
-  api('GET', '/tolets/' + toletId)
-    .then((t) => {
-      toletNameEl.textContent = t.displayName || t.id;
-    })
-    .catch(() => {
-      toletNameEl.textContent = toletId;
-    });
+  if (toletId) {
+    api('GET', '/tolets/' + toletId)
+      .then((t) => {
+        toletNameEl.textContent = t.displayName || t.id;
+      })
+      .catch(() => {
+        toletNameEl.textContent = toletId;
+      });
+  }
+
+  // Resume flow: if applicationId is provided, skip the form and load embed directly
+  if (applicationId) {
+    formCard.classList.add('hidden');
+    embedCard.classList.remove('hidden');
+    toletNameEl.textContent = 'Resuming application...';
+
+    api('POST', '/applications/' + applicationId + '/embed-token')
+      .then((result) => {
+        logEvent('api:application_resumed', {
+          applicationId: result.applicationId,
+          expiresIn: result.expiresIn,
+          refreshExpiresIn: result.refreshExpiresIn,
+        });
+        toletNameEl.textContent = 'Application ' + result.applicationId.substring(0, 8) + '...';
+        loadEmbed(result);
+      })
+      .catch((err) => {
+        embedCard.classList.add('hidden');
+        formCard.classList.remove('hidden');
+        showError('Failed to resume: ' + err.message);
+      });
+  }
 
   function logEvent(type, data) {
     const now = new Date();
@@ -56,7 +83,6 @@
       externalUserId: document.getElementById('externalUserId').value.trim(),
       firstName: document.getElementById('firstName').value.trim() || undefined,
       lastName: document.getElementById('lastName').value.trim() || undefined,
-      email: document.getElementById('email').value.trim() || undefined,
       phone: document.getElementById('phone').value.trim() || undefined,
     };
 

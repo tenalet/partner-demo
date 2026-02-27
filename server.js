@@ -139,6 +139,11 @@ app.get('/api/applications/:id', async (req, res) => {
   res.status(result.status).json(result.data);
 });
 
+app.post('/api/applications/:id/embed-token', async (req, res) => {
+  const result = await proxyToTenalet('POST', `/applications/${req.params.id}/embed-token`);
+  res.status(result.status).json(result.data);
+});
+
 // Reports
 app.get('/api/applications/:id/reports', async (req, res) => {
   const result = await proxyToTenalet('GET', `/applications/${req.params.id}/reports`);
