@@ -206,12 +206,24 @@ Get an ephemeral URL (60s expiry) to download a report. Types: `income`, `credit
 
 ## Embed SDK
 
-The SDK (`embed.js`) renders the Tenalet screening form inside an iframe on your page. Load it from Tenalet's app URL:
+The SDK (`embed.js`) renders the Tenalet screening form inside an iframe on your page. Load it from Tenalet's app URL using the appropriate environment:
+
+| Environment | Script URL |
+|-------------|------------|
+| **Production** | `https://app.tenalet.com/embed.js` |
+| **Sandbox** | `https://app.demo.tenalet.com/embed.js` |
 
 ```html
+<!-- Production -->
 <script src="https://app.tenalet.com/embed.js"></script>
+
+<!-- Sandbox -->
+<script src="https://app.demo.tenalet.com/embed.js"></script>
+
 <div id="tenalet-app"></div>
 ```
+
+The SDK automatically detects its environment from the script URL — no need to pass a separate base URL.
 
 ### `Tenalet.startApplication(options)` (Partner embed flow)
 
@@ -223,7 +235,6 @@ const embed = Tenalet.startApplication({
   token: response.token,
   refreshToken: response.refreshToken,
   containerId: 'tenalet-app',
-  baseUrl: 'https://app.tenalet.com',       // optional, defaults to production
   redirectUrl: '/success.html',              // optional, redirect after submission
   onLoaded: function () { },                 // embed iframe loaded
   onAuthenticated: function (data) { },      // token accepted
@@ -242,7 +253,6 @@ embed.destroy();
 | `token` | Yes | Access token from the API response |
 | `refreshToken` | No | Refresh token from the API response. Enables silent token renewal so the session survives past the access token expiry. |
 | `containerId` | No | DOM element ID to render into (default: `tenalet-app`) |
-| `baseUrl` | No | Tenalet app URL (default: `https://app.tenalet.com`) |
 | `redirectUrl` | No | URL to redirect to after submission. `applicationId` and `status` are appended as query params. |
 | `onLoaded` | No | Called when the iframe content has loaded |
 | `onAuthenticated` | No | Called when the token is accepted and the user is authenticated |

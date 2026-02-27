@@ -145,7 +145,6 @@
         token: appData.token,
         refreshToken: appData.refreshToken,
         containerId: 'tenalet-app',
-        baseUrl: appUrl,
         redirectUrl: redirectUrl,
         onLoaded: () => logEvent('callback:onLoaded', null),
         onAuthenticated: (data) => logEvent('callback:onAuthenticated', data),
