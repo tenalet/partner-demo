@@ -493,11 +493,25 @@ textarea {
 .embed-frame {
   display: flex;
   justify-content: center;
+  padding: 24px;
+  background:
+    linear-gradient(45deg, #e5e7eb 25%, transparent 25%) -8px 0,
+    linear-gradient(-45deg, #e5e7eb 25%, transparent 25%) -8px 0,
+    linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+    linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+  background-size: 16px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  min-height: 400px;
 }
 
 .embed-frame #tenalet-embed-wrapper {
   width: 100%;
   transition: max-width 0.3s ease;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+  background: #fff;
 }
 
 /* Log drawer */

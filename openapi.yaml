@@ -1,0 +1,755 @@
+openapi: 3.1.0
+info:
+  title: Tenalet Kit API
+  version: 1.0.0
+  description: |
+    Tenalet Kit lets partners embed tenant screening into their platforms.
+    Create properties, collect applications via an embedded iframe, and access
+    screening reports — all through a single API key.
+
+    ## Authentication
+
+    All requests require an `X-API-Key` header with your partner API key.
+
+    ```bash
+    curl -H "X-API-Key: pk_live_..." https://api.tenalet.com/v1/partner/tolets
+    ```
+
+    ## Environments
+
+    | Environment | API Base URL | App URL (Embed SDK) |
+    |-------------|-------------|---------------------|
+    | **Production** | `https://api.tenalet.com/v1/partner` | `https://app.tenalet.com` |
+    | **Sandbox** | `https://api.demo.tenalet.com/v1/partner` | `https://app.demo.tenalet.com` |
+
+    ## Embed SDK
+
+    The embed SDK (`embed.js`) renders the Tenalet screening form inside an iframe
+    on your page. Load it from the appropriate environment:
+
+    ```html
+    <script src="https://app.tenalet.com/embed.js"></script>
+    <div id="tenalet-app"></div>
+    ```
+
+    After creating an application via the API, start the embed:
+
+    ```js
+    const embed = Tenalet.startApplication({
+      applicationId: response.applicationId,
+      token: response.token,
+      refreshToken: response.refreshToken,
+      containerId: 'tenalet-app',
+      redirectUrl: '/success',
+      onLoaded: () => {},
+      onAuthenticated: (data) => {},
+      onApplicationStarted: (data) => {},
+      onApplicationSubmitted: (data) => {},
+      onError: (data) => {},
+    });
+    ```
+
+    ### Token Lifecycle
+
+    The access token is short-lived. The embed SDK automatically uses the
+    `refreshToken` to renew the session silently. Always pass both `token` and
+    `refreshToken` to `startApplication()`.
+
+  contact:
+    name: Tenalet Engineering
+    email: engineering@tenalet.com
+  license:
+    name: MIT
+
+servers:
+  - url: https://api.tenalet.com/v1/partner
+    description: Production
+  - url: https://api.demo.tenalet.com/v1/partner
+    description: Sandbox
+
+security:
+  - apiKey: []
+
+tags:
+  - name: Tolets
+    description: Create and manage properties (tolets) for tenant screening.
+  - name: Applications
+    description: Create screening applications and manage embed credentials.
+  - name: Reports
+    description: Access screening reports for completed applications.
+
+paths:
+  # ── Tolets ──────────────────────────────────────────────
+
+  /tolets:
+    post:
+      operationId: createTolet
+      summary: Create a tolet
+      description: Create a property listing for tenant screening.
+      tags: [Tolets]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateToletRequest'
+            example:
+              property:
+                address: 12 Adeola Odeku St, Victoria Island, Lagos
+                city: Lagos
+                state: Lagos
+                type: apartment
+              requirements:
+                modules:
+                  - rentalApplication
+                  - incomeVerification
+                  - creditHistoryAndScore
+              note: 2-bedroom flat, 3rd floor
+              isAcceptingApplications: true
+      responses:
+        '201':
+          description: Tolet created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tolet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    get:
+      operationId: listTolets
+      summary: List tolets
+      description: List your tolets with pagination.
+      tags: [Tolets]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Paginated list of tolets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToletListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /tolets/{toletId}:
+    get:
+      operationId: getTolet
+      summary: Get a tolet
+      description: Get a single tolet's details.
+      tags: [Tolets]
+      parameters:
+        - $ref: '#/components/parameters/ToletId'
+      responses:
+        '200':
+          description: Tolet details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tolet'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      operationId: updateTolet
+      summary: Update a tolet
+      description: Partial update of a tolet's properties.
+      tags: [Tolets]
+      parameters:
+        - $ref: '#/components/parameters/ToletId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateToletRequest'
+      responses:
+        '200':
+          description: Tolet updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tolet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ── Applications ────────────────────────────────────────
+
+  /tolets/{toletId}/applications:
+    post:
+      operationId: createApplication
+      summary: Create an application
+      description: |
+        Create a screening application for a tolet and receive embed credentials.
+        This is the main endpoint for the embed flow. Pass the returned `token`,
+        `refreshToken`, and `applicationId` to `Tenalet.startApplication()`.
+      tags: [Applications]
+      parameters:
+        - $ref: '#/components/parameters/ToletId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplicationRequest'
+            example:
+              externalUserId: usr_abc123
+              firstName: Kemi
+              lastName: Adebayo
+              phone: '+2348012345678'
+      responses:
+        '201':
+          description: Application created with embed credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbedCredentials'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    get:
+      operationId: listApplications
+      summary: List applications for a tolet
+      description: List screening applications for a tolet with pagination.
+      tags: [Applications]
+      parameters:
+        - $ref: '#/components/parameters/ToletId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Paginated list of applications.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /applications/{applicationId}:
+    get:
+      operationId: getApplication
+      summary: Get an application
+      description: Get a single application's details including status, timestamps, and applicant info.
+      tags: [Applications]
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        '200':
+          description: Application details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /applications/{applicationId}/embed-token:
+    post:
+      operationId: createEmbedToken
+      summary: Generate embed token
+      description: |
+        Generate fresh embed tokens for an existing **draft** application.
+        Use this to resume an application that was started but not yet submitted.
+
+        Returns `400` if the application has already been submitted.
+      tags: [Applications]
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        '200':
+          description: Fresh embed credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbedCredentials'
+        '400':
+          description: Application has already been submitted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ── Reports ─────────────────────────────────────────────
+
+  /applications/{applicationId}/reports:
+    get:
+      operationId: listReports
+      summary: List reports
+      description: List available screening reports for a completed application.
+      tags: [Reports]
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        '200':
+          description: List of available reports.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Report'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /applications/{applicationId}/reports/{reportType}:
+    get:
+      operationId: getReportUrl
+      summary: Get report download URL
+      description: |
+        Get an ephemeral URL (60-second expiry) to download a screening report.
+      tags: [Reports]
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+        - name: reportType
+          in: path
+          required: true
+          description: The type of report to download.
+          schema:
+            $ref: '#/components/schemas/ReportType'
+      responses:
+        '200':
+          description: Ephemeral download URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportUrl'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+# ── Webhooks ────────────────────────────────────────────
+
+webhooks:
+  applicationSubmitted:
+    post:
+      operationId: onApplicationSubmitted
+      summary: Application submitted
+      description: Fired when an applicant completes and submits their screening.
+      tags: [Webhooks]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent'
+      responses:
+        '200':
+          description: Acknowledge receipt.
+      x-webhook-headers:
+        X-Tenalet-Signature:
+          description: HMAC-SHA256 hex digest of the raw request body using your webhook secret.
+        X-Tenalet-Event:
+          description: The event type string (e.g. `application.submitted`).
+
+  reportReady:
+    post:
+      operationId: onReportReady
+      summary: Report ready
+      description: Fired when a screening report is available for download.
+      tags: [Webhooks]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent'
+      responses:
+        '200':
+          description: Acknowledge receipt.
+
+# ── Components ──────────────────────────────────────────
+
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Your partner API key.
+
+  parameters:
+    ToletId:
+      name: toletId
+      in: path
+      required: true
+      description: The tolet UUID.
+      schema:
+        type: string
+        format: uuid
+
+    ApplicationId:
+      name: applicationId
+      in: path
+      required: true
+      description: The application UUID.
+      schema:
+        type: string
+        format: uuid
+
+    Page:
+      name: page
+      in: query
+      required: false
+      description: Page number (1-indexed).
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: Items per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    Sort:
+      name: sort
+      in: query
+      required: false
+      description: Sort order by creation date.
+      schema:
+        type: string
+        enum: [ASC, DESC]
+        default: DESC
+
+  responses:
+    BadRequest:
+      description: Invalid request body or parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Missing or invalid API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    # ── Tolets ──────────────────────────────────────────
+
+    Property:
+      type: object
+      required: [address, city, state, type]
+      properties:
+        address:
+          type: string
+          description: Full street address.
+          example: 12 Adeola Odeku St, Victoria Island, Lagos
+        city:
+          type: string
+          example: Lagos
+        state:
+          type: string
+          example: Lagos
+        type:
+          type: string
+          description: Property type.
+          enum: [apartment, house, office, shop, warehouse, land, other]
+          example: apartment
+
+    ScreeningModule:
+      type: string
+      description: |
+        Available screening modules. Note: `incomeVerification` requires
+        `creditHistoryAndScore` to also be selected.
+      enum:
+        - rentalApplication
+        - incomeVerification
+        - creditHistoryAndScore
+
+    Requirements:
+      type: object
+      required: [modules]
+      properties:
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreeningModule'
+          minItems: 1
+          description: Screening modules to require for this property.
+
+    CreateToletRequest:
+      type: object
+      required: [property, requirements]
+      properties:
+        property:
+          $ref: '#/components/schemas/Property'
+        requirements:
+          $ref: '#/components/schemas/Requirements'
+        note:
+          type: string
+          description: Internal note for this property.
+          example: 2-bedroom flat, 3rd floor
+        isAcceptingApplications:
+          type: boolean
+          description: Whether the property is accepting new applications.
+          default: true
+
+    UpdateToletRequest:
+      type: object
+      properties:
+        property:
+          $ref: '#/components/schemas/Property'
+        requirements:
+          $ref: '#/components/schemas/Requirements'
+        note:
+          type: string
+        isAcceptingApplications:
+          type: boolean
+
+    Tolet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+          description: Human-readable name derived from the property address.
+        property:
+          $ref: '#/components/schemas/Property'
+        requirements:
+          $ref: '#/components/schemas/Requirements'
+        note:
+          type: string
+        isAcceptingApplications:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ToletListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tolet'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ── Applications ──────────────────────────────────────
+
+    CreateApplicationRequest:
+      type: object
+      required: [externalUserId]
+      properties:
+        externalUserId:
+          type: string
+          description: |
+            Your unique identifier for the applicant. Alphanumeric characters,
+            dots, hyphens, and underscores are allowed.
+          pattern: '^[a-zA-Z0-9._-]+$'
+          example: usr_abc123
+        firstName:
+          type: string
+          description: Pre-fills the application form.
+          example: Kemi
+        lastName:
+          type: string
+          description: Pre-fills the application form.
+          example: Adebayo
+        phone:
+          type: string
+          description: Pre-fills the application form.
+          example: '+2348012345678'
+
+    EmbedCredentials:
+      type: object
+      description: Credentials to initialise the embed SDK.
+      properties:
+        applicationId:
+          type: string
+          format: uuid
+          description: UUID of the created application.
+        token:
+          type: string
+          description: Short-lived JWT access token for the embed iframe.
+        tokenType:
+          type: string
+          description: Always `Bearer`.
+          enum: [Bearer]
+        expiresIn:
+          type: integer
+          description: Access token lifetime in seconds.
+          example: 900
+        refreshToken:
+          type: string
+          description: Long-lived refresh token for silent session renewal.
+        refreshExpiresIn:
+          type: integer
+          description: Refresh token lifetime in seconds.
+          example: 604800
+        embedUrl:
+          type: string
+          format: uri
+          description: Full URL to load in the embed iframe.
+          example: https://app.tenalet.com/embed/apply/550e8400-e29b-41d4-a716-446655440000
+
+    ApplicationStatus:
+      type: string
+      enum: [draft, submitted, approved, rejected]
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        toletId:
+          type: string
+          format: uuid
+        externalUserId:
+          type: string
+        status:
+          $ref: '#/components/schemas/ApplicationStatus'
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        submittedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    ApplicationListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ── Reports ───────────────────────────────────────────
+
+    ReportType:
+      type: string
+      description: Type of screening report.
+      enum: [income, credit, application, full]
+
+    Report:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ReportType'
+        status:
+          type: string
+          enum: [available, pending, failed]
+        createdAt:
+          type: string
+          format: date-time
+
+    ReportUrl:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ReportType'
+        url:
+          type: string
+          format: uri
+          description: Ephemeral download URL. Expires after 60 seconds.
+        expiresIn:
+          type: integer
+          description: URL lifetime in seconds.
+          example: 60
+
+    # ── Webhooks ──────────────────────────────────────────
+
+    WebhookEvent:
+      type: object
+      description: |
+        Webhook payload sent to your configured endpoint. Verify authenticity
+        using the `X-Tenalet-Signature` header — an HMAC-SHA256 hex digest of
+        the raw request body signed with your webhook secret.
+      properties:
+        event:
+          type: string
+          description: Event type.
+          example: application.submitted
+        data:
+          type: object
+          description: Event-specific payload.
+        timestamp:
+          type: string
+          format: date-time
+          description: When the event occurred.
+
+    # ── Shared ────────────────────────────────────────────
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type.
+          example: Bad Request
+        message:
+          type: string
+          description: Human-readable error description.
+          example: Email is already registered.
+        statusCode:
+          type: integer
+          example: 400
