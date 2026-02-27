@@ -151,11 +151,16 @@
 
       el.innerHTML = items
         .map(
-          (a) => `
+          (a) => {
+            const actionBtn = a.status === 'submitted' || a.status === 'approved' || a.status === 'rejected'
+              ? `<a class="btn btn-sm btn-secondary" href="/reports.html?applicationId=${a.id}">Reports</a>`
+              : `<a class="btn btn-sm btn-primary" href="/screen.html?toletId=${toletId}">Resume</a>`;
+            return `
           <div class="app-item">
             <span>${escapeHtml(a.applicantFullName || '-')} ${statusBadge(a.status)}</span>
-            <a class="btn btn-sm btn-secondary" href="/reports.html?applicationId=${a.id}">Reports</a>
-          </div>`
+            ${actionBtn}
+          </div>`;
+          }
         )
         .join('');
     } catch (err) {

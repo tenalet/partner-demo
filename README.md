@@ -88,6 +88,183 @@ The demo server receives webhooks at `POST /api/webhooks/tenalet`. To test local
    ```
 4. Open [http://localhost:3500/webhooks.html](http://localhost:3500/webhooks.html) to see incoming events.
 
+## API Reference
+
+All endpoints require the `X-API-Key` header with your partner API key. The base URL defaults to `https://api.tenalet.com/v1/partner`.
+
+### Tolets (Properties)
+
+#### `POST /tolets`
+
+Create a property listing for tenant screening.
+
+**Request body:**
+
+```json
+{
+  "property": {
+    "address": "12 Adeola Odeku St, Victoria Island, Lagos",
+    "city": "Lagos",
+    "state": "Lagos",
+    "type": "apartment"
+  },
+  "requirements": {
+    "modules": ["rentalApplication", "incomeVerification", "creditHistoryAndScore"],
+    "whoPays": "applicant"
+  },
+  "note": "2-bedroom flat, 3rd floor",
+  "isAcceptingApplications": true
+}
+```
+
+Available modules: `rentalApplication`, `incomeVerification`, `creditHistoryAndScore`. Note: `incomeVerification` requires `creditHistoryAndScore` to also be selected.
+
+#### `GET /tolets`
+
+List your tolets (paginated). Query params: `page`, `limit`, `sort` (`ASC`/`DESC`).
+
+#### `GET /tolets/:id`
+
+Get a single tolet's details.
+
+#### `PATCH /tolets/:id`
+
+Update a tolet (partial update).
+
+### Applications
+
+#### `POST /tolets/:toletId/applications`
+
+Create a screening application and get embed credentials. This is the main endpoint for the embed flow.
+
+**Request body:**
+
+```json
+{
+  "externalUserId": "usr_abc123",
+  "firstName": "Kemi",
+  "lastName": "Adebayo",
+  "email": "kemi@example.com",
+  "phone": "+2348012345678"
+}
+```
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `externalUserId` | Yes | Your unique ID for the applicant (alphanumeric, dots, hyphens, underscores) |
+| `firstName` | No | Pre-fills the application form |
+| `lastName` | No | Pre-fills the application form |
+| `email` | No | Used for screening notifications (not for account creation) |
+| `phone` | No | Pre-fills the application form |
+
+**Response:**
+
+```json
+{
+  "applicationId": "uuid",
+  "token": "eyJhbG...",
+  "tokenType": "Bearer",
+  "expiresIn": 900,
+  "refreshToken": "eyJhbG...",
+  "refreshExpiresIn": 604800,
+  "embedUrl": "https://app.tenalet.com/embed/apply/uuid"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `applicationId` | UUID of the created application |
+| `token` | Short-lived JWT access token for the embed iframe |
+| `tokenType` | Always `Bearer` |
+| `expiresIn` | Access token lifetime in seconds |
+| `refreshToken` | Long-lived refresh token for silent renewal |
+| `refreshExpiresIn` | Refresh token lifetime in seconds |
+| `embedUrl` | Full URL to load in the embed iframe |
+
+The `refreshToken` is used by the SDK to silently renew the session when the access token expires. Partners must pass both `token` and `refreshToken` to the SDK (see [Embed SDK](#embed-sdk) below).
+
+#### `GET /tolets/:toletId/applications`
+
+List applications for a tolet (paginated).
+
+#### `GET /applications/:id`
+
+Get a single application's details (status, timestamps, applicant info).
+
+### Reports
+
+#### `GET /applications/:id/reports`
+
+List available screening reports for a completed application.
+
+#### `GET /applications/:id/reports/:type`
+
+Get an ephemeral URL (60s expiry) to download a report. Types: `income`, `credit`, `application`, `full`.
+
+## Embed SDK
+
+The SDK (`embed.js`) renders the Tenalet screening form inside an iframe on your page. Load it from Tenalet's app URL:
+
+```html
+<script src="https://app.tenalet.com/embed.js"></script>
+<div id="tenalet-app"></div>
+```
+
+### `Tenalet.startApplication(options)` (Partner embed flow)
+
+Use this after creating an application via the API. The applicant is pre-authenticated — no sign-in step required.
+
+```js
+const embed = Tenalet.startApplication({
+  applicationId: response.applicationId,
+  token: response.token,
+  refreshToken: response.refreshToken,
+  containerId: 'tenalet-app',
+  baseUrl: 'https://app.tenalet.com',       // optional, defaults to production
+  redirectUrl: '/success.html',              // optional, redirect after submission
+  onLoaded: function () { },                 // embed iframe loaded
+  onAuthenticated: function (data) { },      // token accepted
+  onApplicationStarted: function (data) { }, // applicant began filling form
+  onApplicationSubmitted: function (data) { }, // screening submitted
+  onError: function (data) { },              // something went wrong
+});
+
+// To remove the embed later:
+embed.destroy();
+```
+
+| Option | Required | Description |
+|--------|----------|-------------|
+| `applicationId` | Yes | From the API response |
+| `token` | Yes | Access token from the API response |
+| `refreshToken` | No | Refresh token from the API response. Enables silent token renewal so the session survives past the access token expiry. |
+| `containerId` | No | DOM element ID to render into (default: `tenalet-app`) |
+| `baseUrl` | No | Tenalet app URL (default: `https://app.tenalet.com`) |
+| `redirectUrl` | No | URL to redirect to after submission. `applicationId` and `status` are appended as query params. |
+| `onLoaded` | No | Called when the iframe content has loaded |
+| `onAuthenticated` | No | Called when the token is accepted and the user is authenticated |
+| `onApplicationStarted` | No | Called when the applicant begins filling the form |
+| `onApplicationSubmitted` | No | Called when the applicant submits the screening |
+| `onError` | No | Called on errors (e.g. invalid token, network failure) |
+
+### `Tenalet.createApplication(options)` (Link-code flow)
+
+Use this for the self-service flow where applicants sign in with OTP. No API call needed — just a link code from the dashboard.
+
+```js
+const embed = Tenalet.createApplication({
+  linkCode: 'abc123',
+  containerId: 'tenalet-app',
+  onApplicationSubmitted: function (data) { },
+});
+```
+
+### Token lifecycle
+
+The access token (`token`) is short-lived. When it expires, the embed SDK automatically uses the `refreshToken` to obtain a new access token without interrupting the applicant. If no `refreshToken` is provided, the session will end when the access token expires and the applicant will see an error.
+
+Always pass `refreshToken` from the API response to `startApplication()`.
+
 ## Project Structure
 
 ```

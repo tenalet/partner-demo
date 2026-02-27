@@ -70,6 +70,7 @@
         applicationId: result.applicationId,
         tokenType: result.tokenType,
         expiresIn: result.expiresIn,
+        refreshExpiresIn: result.refreshExpiresIn,
       });
 
       // Hide form, show embed
@@ -116,6 +117,7 @@
       const embed = window.Tenalet.startApplication({
         applicationId: appData.applicationId,
         token: appData.token,
+        refreshToken: appData.refreshToken,
         containerId: 'tenalet-app',
         baseUrl: appUrl,
         redirectUrl: redirectUrl,
