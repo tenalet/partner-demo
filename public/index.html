@@ -15,9 +15,9 @@
 
   <div class="container">
     <div class="split">
-      <!-- Left: Create Property -->
+      <!-- Left: Create Tolet -->
       <div class="card">
-        <h2>Create Property</h2>
+        <h2>Create Tolet</h2>
         <form id="create-form">
           <label for="street">Street *</label>
           <input type="text" id="street" required placeholder="123 Main Street">
@@ -26,10 +26,10 @@
           <input type="text" id="unit" placeholder="Apt 4B">
 
           <label for="city">City *</label>
-          <input type="text" id="city" required placeholder="Lagos">
+          <input type="text" id="city" required placeholder="Ikeja">
 
           <label for="state">State *</label>
-          <input type="text" id="state" required placeholder="Lagos State">
+          <input type="text" id="state" required placeholder="Lagos">
 
           <label for="role">Role *</label>
           <select id="role">
@@ -38,13 +38,13 @@
             <option value="property_manager">Property Manager</option>
           </select>
 
-          <label for="landlordFirst">Landlord First Name</label>
+          <label for="landlordFirst">Owner First Name</label>
           <input type="text" id="landlordFirst" placeholder="John">
 
-          <label for="landlordLast">Landlord Last Name</label>
+          <label for="landlordLast">Owner Last Name</label>
           <input type="text" id="landlordLast" placeholder="Doe">
 
-          <label for="landlordEmail">Landlord Email</label>
+          <label for="landlordEmail">Owner Email</label>
           <input type="email" id="landlordEmail" placeholder="john@example.com">
 
           <label>Screening Modules *</label>
@@ -54,17 +54,17 @@
             <label><input type="checkbox" name="modules" value="incomeVerification" id="mod-income" disabled> Income Verification <small style="color:#999">(requires Credit History)</small></label>
           </div>
 
-          <label for="note">Note</label>
-          <textarea id="note" placeholder="3-bedroom flat on the top floor"></textarea>
+          <label for="note">Property type</label>
+          <textarea id="note" placeholder="3-bedroom flat"></textarea>
 
           <button type="submit" class="btn btn-primary mt-16">Create Property</button>
           <div id="create-error" class="error hidden"></div>
         </form>
       </div>
 
-      <!-- Right: Properties List -->
+      <!-- Right: Tolet List -->
       <div class="card">
-        <h2>Your Properties</h2>
+        <h2>Your Tolets</h2>
         <div id="tolet-list">
           <div class="empty">Loading...</div>
         </div>
