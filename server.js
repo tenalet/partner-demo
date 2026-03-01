@@ -121,6 +121,11 @@ app.get('/api/tolets/:id', async (req, res) => {
   res.status(result.status).json(result.data);
 });
 
+app.patch('/api/tolets/:id', async (req, res) => {
+  const result = await proxyToTenalet('PATCH', `/tolets/${req.params.id}`, req.body);
+  res.status(result.status).json(result.data);
+});
+
 // Applications
 app.post('/api/tolets/:toletId/applications', async (req, res) => {
   const result = await proxyToTenalet('POST', `/tolets/${req.params.toletId}/applications`, req.body);

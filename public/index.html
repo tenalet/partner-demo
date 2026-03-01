@@ -54,6 +54,15 @@
             <label><input type="checkbox" name="modules" value="incomeVerification" id="mod-income" disabled> Income Verification <small style="color:#999">(requires Credit History)</small></label>
           </div>
 
+          <label for="rentAmount">Rent Amount (₦)</label>
+          <input type="number" id="rentAmount" placeholder="1200000" min="5000" max="100000000">
+
+          <label for="rentFrequency">Rent Frequency</label>
+          <select id="rentFrequency">
+            <option value="yearly">Yearly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+
           <label for="note">Property type</label>
           <textarea id="note" placeholder="3-bedroom flat"></textarea>
 

@@ -47,6 +47,11 @@
     if (lLast) landlord.lastName = lLast;
     if (lEmail) landlord.email = lEmail;
 
+    const rentAmount = document.getElementById('rentAmount').value;
+    const rent = rentAmount
+      ? { amount: Number(rentAmount), frequency: document.getElementById('rentFrequency').value }
+      : undefined;
+
     const body = {
       property: {
         address: {
@@ -59,6 +64,7 @@
       },
       requirements: { modules },
       note: document.getElementById('note').value.trim() || undefined,
+      rent,
       isAcceptingApplications: true,
     };
 
@@ -102,11 +108,16 @@
             .map((m) => `<span class="badge badge-gray">${m}</span>`)
             .join(' ');
 
+          const rentTag = t.rent
+            ? `<span class="badge badge-gray">${Number(t.rent.amount).toLocaleString('en-NG')}/${t.rent.frequency || 'yearly'}</span>`
+            : '';
+
           return `
             <div class="tolet-card" data-id="${t.id}">
               <h3>${escapeHtml(t.displayName || t.id)}</h3>
               <div class="meta">
                 Code: ${t.linkCode || '-'} &middot; ${moduleTags}
+                ${rentTag ? `&middot; ${rentTag}` : ''}
                 &middot; ${t.isAcceptingApplications ? '<span class="badge badge-green">active</span>' : '<span class="badge badge-red">closed</span>'}
               </div>
               <div class="actions">
