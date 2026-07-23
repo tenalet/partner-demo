@@ -421,7 +421,7 @@ textarea {
 }
 
 /* Embed container */
-#tenalet-embed-wrapper {
+#screenkit-embed-wrapper {
   min-height: 600px;
 }
 
@@ -529,7 +529,7 @@ textarea {
   min-height: 400px;
 }
 
-.embed-frame #tenalet-embed-wrapper {
+.embed-frame #screenkit-embed-wrapper {
   width: 100%;
   transition: max-width 0.3s ease;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.06);

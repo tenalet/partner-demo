@@ -28,7 +28,7 @@
 
   // Size picker elements
   const sizeButtons = document.querySelectorAll('.size-btn');
-  const embedWrapper = document.getElementById('tenalet-embed-wrapper');
+  const embedWrapper = document.getElementById('screenkit-embed-wrapper');
 
   // Drawer state
   var drawerOpen = false;
@@ -206,27 +206,27 @@
     script.onload = function () {
       logEvent('sdk:script_loaded', null);
 
-      if (!window.Tenalet) {
-        logEvent('sdk:error', { message: 'Tenalet global not found' });
+      if (!window.ScreenKit) {
+        logEvent('sdk:error', { message: 'ScreenKit global not found' });
         return;
       }
 
       // Listen for ALL postMessage events from the iframe
       window.addEventListener('message', function (event) {
         if (!event.data || !event.data.type) return;
-        // Only log tenalet events
-        if (typeof event.data.type === 'string' && event.data.type.startsWith('tenalet:')) {
+        // Only log screenkit events
+        if (typeof event.data.type === 'string' && event.data.type.startsWith('screenkit:')) {
           logEvent('postMessage:' + event.data.type, event.data);
         }
       });
 
       var redirectUrl = window.location.origin + '/success.html';
 
-      var embed = window.Tenalet.startApplication({
+      var embed = window.ScreenKit.startApplication({
         applicationId: appData.applicationId,
         token: appData.token,
         refreshToken: appData.refreshToken,
-        containerId: 'tenalet-app',
+        containerId: 'screenkit-app',
         redirectUrl: redirectUrl,
         onLoaded: function () { logEvent('callback:onLoaded', null); },
         onAuthenticated: function (data) { logEvent('callback:onAuthenticated', data); },
