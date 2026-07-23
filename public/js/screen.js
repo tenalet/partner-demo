@@ -164,9 +164,10 @@
       return;
     }
 
-    // Validate required fields
-    if (!body.externalUserId || typeof body.externalUserId !== 'string' || !body.externalUserId.trim()) {
-      showError('"externalUserId" is required');
+    // Validate required fields. Applications are keyed on the applicant email
+    // (partner, email, mode) — re-sending the same email returns the existing draft.
+    if (!body.email || typeof body.email !== 'string' || !body.email.trim()) {
+      showError('"email" is required');
       return;
     }
 

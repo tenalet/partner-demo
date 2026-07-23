@@ -1,10 +1,10 @@
 # ScreenKit Demo
 
-Reference implementation for [ScreenKit](https://registry.scalar.com/@screenkit/apis/screenkit-api@latest). Demonstrates tolet creation, embedded tenant screening, report access, and webhook handling.
+Reference implementation for [ScreenKit](https://registry.scalar.com/@roofteller/apis/screenkit-api@latest). Demonstrates tolet creation, embedded tenant screening, report access, and webhook handling.
 
 ![ScreenKit embed widget](docs/embed-preview.png)
 
-> For full API reference, embed SDK docs, and webhook schemas, see the **[ScreenKit API docs](https://registry.scalar.com/@screenkit/apis/screenkit-api@latest)**.
+> For full API reference, embed SDK docs, and webhook schemas, see the **[ScreenKit API docs](https://registry.scalar.com/@roofteller/apis/screenkit-api@latest)**.
 
 ## Quick Start
 

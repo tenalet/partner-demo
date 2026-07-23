@@ -32,6 +32,11 @@
 
     // Validate required fields
     const errors = [];
+    // operatorEmail identifies the property operator (landlord/agent) and is
+    // keyed on (partner, email, mode) — required by the API.
+    if (!body.operatorEmail || typeof body.operatorEmail !== 'string' || !body.operatorEmail.trim()) {
+      errors.push('"operatorEmail" is required');
+    }
     if (!body.property || typeof body.property !== 'object') {
       errors.push('"property" object is required');
     } else {
@@ -43,10 +48,11 @@
         if (!addr.city) errors.push('"property.address.city" is required');
         if (!addr.state) errors.push('"property.address.state" is required');
       }
+      const roles = ['landlord', 'tenant_agent', 'listing_agent', 'property_manager'];
       if (!body.property.role) {
         errors.push('"property.role" is required');
-      } else if (!['landlord', 'agent', 'property_manager'].includes(body.property.role)) {
-        errors.push('"property.role" must be one of: landlord, agent, property_manager');
+      } else if (!roles.includes(body.property.role)) {
+        errors.push('"property.role" must be one of: ' + roles.join(', '));
       }
     }
     if (!body.requirements || !Array.isArray(body.requirements.modules) || body.requirements.modules.length === 0) {
@@ -87,8 +93,9 @@
   // Load properties
   async function loadTolets() {
     try {
-      const data = await api('GET', '/tolets?limit=50&sort=DESC');
-      const items = data.items || data || [];
+      const data = await api('GET', '/tolets?limit=50');
+      // Partner API list envelope: { data: [...], has_more, next_cursor }
+      const items = Array.isArray(data) ? data : (data.data || []);
 
       if (items.length === 0) {
         listEl.innerHTML = '<div class="empty">No properties yet. Create one to get started.</div>';
@@ -143,7 +150,8 @@
 
     try {
       const data = await api('GET', `/tolets/${toletId}/applications?limit=50`);
-      const items = data.items || data || [];
+      // Partner API list envelope: { data: [...], has_more, next_cursor }
+      const items = Array.isArray(data) ? data : (data.data || []);
 
       if (items.length === 0) {
         el.innerHTML = '<div style="font-size:12px;color:#999;">No applications yet.</div>';
