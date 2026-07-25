@@ -116,9 +116,8 @@
             <div class="tolet-card" data-id="${t.id}">
               <h3>${escapeHtml(t.displayName || t.id)}</h3>
               <div class="meta">
-                Code: ${t.linkCode || '-'} &middot; ${moduleTags}
+                ${moduleTags}
                 ${rentTag ? `&middot; ${rentTag}` : ''}
-                &middot; ${t.isAcceptingApplications ? '<span class="badge badge-green">active</span>' : '<span class="badge badge-red">closed</span>'}
               </div>
               <div class="actions">
                 <a class="btn btn-primary btn-sm" href="/screen.html?toletId=${t.id}">Screen Tenant</a>
